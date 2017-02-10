@@ -1,0 +1,26 @@
+sudo: required
+
+language: elixir
+elixir:
+- 1.4.1
+otp_release:
+- 18.2
+addons:
+  apt:
+    sources:
+    - precise-pgdg-9.5
+    packages:
+    - postgresql-9.5
+    - postgresql-contrib-9.5
+  postgresql: '9.5'
+services:
+  - postgresql
+before_script:
+# Create the test database
+- cp config/text.exs.travis config/test.exs
+- psql -c 'create database social_app_api_test;' -U postgres
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install postgresql-9.5
+  - sudo /etc/init.d/postgresql stop
+  - sudo /etc/init.d/postgresql start 9.5
