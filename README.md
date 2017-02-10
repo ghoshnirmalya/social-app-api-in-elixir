@@ -2,8 +2,7 @@
 
 An API only app to throw response for a Social Networking app.
 
-To start your Phoenix app:
-
+## Development
   * Install dependencies with `mix deps.get`
   * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
   * Start Phoenix endpoint with `mix phoenix.server`
