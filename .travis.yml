@@ -24,3 +24,8 @@ before_install:
   - sudo apt-get install postgresql-9.5
   - sudo /etc/init.d/postgresql stop
   - sudo /etc/init.d/postgresql start 9.5
+script:
+  - MIX_ENV=test mix do compile --warnings-as-errors, coveralls.json
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
