@@ -10,7 +10,13 @@ defmodule SocialAppApi.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
-     deps: deps()]
+     deps: deps(),
+     preferred_cli_env: [
+      "coveralls": :test,
+      "coveralls.html": :test,
+      "coveralls.json": :test,
+     ],
+     test_coverage: [tool: ExCoveralls]]
   end
 
   # Configuration for the OTP application.
@@ -36,7 +42,8 @@ defmodule SocialAppApi.Mixfile do
      {:postgrex, ">= 0.0.0"},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
-     {:cors_plug, "~> 1.2"}]
+     {:cors_plug, "~> 1.2"},
+     {:excoveralls, "~> 0.5.7", only: :test}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
