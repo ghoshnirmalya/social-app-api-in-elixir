@@ -47,7 +47,8 @@ defmodule SocialAppApi.Mixfile do
      {:excoveralls, "~> 0.5.7", only: :test},
      {:oauth, github: "tim/erlang-oauth"},
      {:ueberauth, "~> 0.4"},
-     {:ueberauth_google, "~> 0.2"}]
+     {:ueberauth_google, "~> 0.2"},
+     {:ja_serializer, "~> 0.11.2"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

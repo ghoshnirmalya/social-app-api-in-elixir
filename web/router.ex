@@ -7,6 +7,8 @@ defmodule SocialAppApi.Router do
 
   scope "/api/v1", SocialAppApi do
     pipe_through :api
+
+    resources "/users", UserController, except: [:new, :edit]
   end
 
   scope "/api/v1/auth", SocialAppApi do

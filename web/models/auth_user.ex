@@ -8,7 +8,6 @@ defmodule AuthUser do
   def basic_info(%Auth{} = auth) do
     {:ok,
       %{
-        name: auth.info.name,
         avatar: auth.info.image,
         email: auth.info.email,
         first_name: auth.info.first_name,
