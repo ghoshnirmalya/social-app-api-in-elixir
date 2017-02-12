@@ -1,0 +1,12 @@
+dependencies:
+  pre:
+    - bash script/circle-ci/prepare.sh
+  cache_directories:
+    - ~/dependencies
+    - ~/.mix
+    - _build
+    - deps
+
+test:
+  override:
+    - bash script/circle-ci/test.sh
