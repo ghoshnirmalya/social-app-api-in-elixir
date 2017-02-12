@@ -17,7 +17,7 @@ services:
   - postgresql
 before_script:
 # Create the test database
-- cp config/text.exs.travis config/test.exs
+- cp config/test.exs.travis config/test.exs
 - psql -c 'create database social_app_api_test;' -U postgres
 before_install:
   - sudo apt-get update
@@ -26,6 +26,5 @@ before_install:
   - sudo /etc/init.d/postgresql start 9.5
 script:
   - MIX_ENV=test mix do compile --warnings-as-errors, coveralls.json
-
 after_success:
   - bash <(curl -s https://codecov.io/bash)

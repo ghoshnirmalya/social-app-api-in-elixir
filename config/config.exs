@@ -22,14 +22,31 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-# Import environment specific config. This must remain at the bottom
-# of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
-
 # Change the json response type to json-api
 config :phoenix, :format_encoders,
   "json-api": Poison
 
-config :plug, :mimes, %{
+config :plug, :types, %{
   "application/vnd.api+json" => ["json-api"]
 }
+
+# Ueberauth Config for oauth
+config :ueberauth, Ueberauth,
+  base_path: "/api/v1/auth",
+  providers: [
+    google: { Ueberauth.Strategy.Google, [] },
+    identity: { Ueberauth.Strategy.Identity, [
+        callback_methods: ["POST"],
+        uid_field: :username,
+        nickname_field: :username,
+      ] },
+  ]
+
+config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+  client_id: System.get_env("GOOGLE_CLIENT_ID"),
+  client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),
+  redirect_uri: System.get_env("GOOGLE_REDIRECT_URI")
+
+# Import environment specific config. This must remain at the bottom
+# of this file so it overrides the configuration defined above.
+import_config "#{Mix.env}.exs"
