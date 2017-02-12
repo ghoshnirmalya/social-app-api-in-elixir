@@ -2,8 +2,6 @@ defmodule SocialAppApi.UserControllerTest do
   use SocialAppApi.ConnCase
 
   alias SocialAppApi.User
-  @valid_attrs %{access_token: "some content", auth_provider: "some content", avatar: "some content", email: "some content", first_name: "some content", last_name: "some content"}
-  @invalid_attrs %{}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -17,43 +15,20 @@ defmodule SocialAppApi.UserControllerTest do
   test "shows chosen resource", %{conn: conn} do
     user = Repo.insert! %User{}
     conn = get conn, user_path(conn, :show, user)
-    assert json_response(conn, 200)["data"] == %{"id" => user.id,
+    assert json_response(conn, 200)["data"] == %{"attributes" => %{"id" => user.id,
       "email" => user.email,
       "auth_provider" => user.auth_provider,
       "first_name" => user.first_name,
       "last_name" => user.last_name,
       "avatar" => user.avatar,
-      "access_token" => user.access_token}
+      "access_token" => user.access_token},
+      "type" => "user"}
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
     assert_error_sent 404, fn ->
       get conn, user_path(conn, :show, -1)
     end
-  end
-
-  test "creates and renders resource when data is valid", %{conn: conn} do
-    conn = post conn, user_path(conn, :create), user: @valid_attrs
-    assert json_response(conn, 201)["data"]["id"]
-    assert Repo.get_by(User, @valid_attrs)
-  end
-
-  test "does not create resource and renders errors when data is invalid", %{conn: conn} do
-    conn = post conn, user_path(conn, :create), user: @invalid_attrs
-    assert json_response(conn, 422)["errors"] != %{}
-  end
-
-  test "updates and renders chosen resource when data is valid", %{conn: conn} do
-    user = Repo.insert! %User{}
-    conn = put conn, user_path(conn, :update, user), user: @valid_attrs
-    assert json_response(conn, 200)["data"]["id"]
-    assert Repo.get_by(User, @valid_attrs)
-  end
-
-  test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    user = Repo.insert! %User{}
-    conn = put conn, user_path(conn, :update, user), user: @invalid_attrs
-    assert json_response(conn, 422)["errors"] != %{}
   end
 
   test "deletes chosen resource", %{conn: conn} do

@@ -13,7 +13,12 @@ defmodule SocialAppApi.ErrorView do
   end
 
   def render("404.json-api", _assigns) do
-    %{title: "Not Found", code: 404}
+    %{title: "Page not found", code: 404}
+    |> JaSerializer.ErrorSerializer.format
+  end
+
+  def render("422.json-api", _assigns) do
+    %{title: "Unprocessable entity", code: 422}
     |> JaSerializer.ErrorSerializer.format
   end
 
@@ -22,8 +27,8 @@ defmodule SocialAppApi.ErrorView do
     |> JaSerializer.ErrorSerializer.format
   end
 
-  # # In case no render clause matches or no
-  # # template is found, let's render it as 500
+  # In case no render clause matches or no
+  # template is found, let's render it as 500
   def template_not_found(_template, assigns) do
     render "500.json-api", assigns
   end
