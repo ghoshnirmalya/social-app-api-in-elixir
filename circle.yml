@@ -6,7 +6,19 @@ dependencies:
     - ~/.mix
     - _build
     - deps
-
 test:
   override:
     - bash script/circle-ci/test.sh
+machine:
+  services:
+    - postgres
+  environment:
+    DB_NAME_TEST=social_app_api_test
+    DB_PASSWORD_TEST=
+    DB_HOSTNAME_TEST=localhost
+    DB_USERNAME_TEST=postgres
+database:
+  override:
+    # Create the test database
+    - cp config/test.exs.travis config/test.exs
+    - psql -c 'create database social_app_api_test;' -U postgres
