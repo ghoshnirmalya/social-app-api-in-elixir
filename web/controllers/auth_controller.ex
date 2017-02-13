@@ -8,40 +8,29 @@ defmodule SocialAppApi.AuthController do
 
   alias SocialAppApi.User
 
-  def request(conn, _params) do
-    conn
-    |> json(%{"data" =>
-        %{
-          "type" => "user",
-          "attributes" => %{
-            "status": "authentication request"
-          }
-        }
-      })
+  def request(_params) do
   end
 
   def delete(conn, _params) do
+    # Sign out the user
     conn
+    |> put_status(200)
     |> json(%{"data" =>
         %{
           "type" => "user",
           "attributes" => %{
-            "status": "logged out"
+            "status": "log out"
           }
         }
       })
   end
 
   def callback(%{assigns: %{ueberauth_failure: _fails}} = conn, _params) do
+    # This callback is called when the user denies the app to get the
+    # data from the oauth provider
     conn
-    |> json(%{"data" =>
-        %{
-          "type" => "user",
-          "attributes" => %{
-            "status": "authentication failed"
-          }
-        }
-      })
+    |> put_status(401)
+    |> render(SocialAppApi.ErrorView, "401.json-api")
   end
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
@@ -53,28 +42,11 @@ defmodule SocialAppApi.AuthController do
     case AuthUser.basic_info(auth) do
       {:ok, user} ->
         conn
-        |> json(%{"data" =>
-            %{
-              "type" => "user",
-              "attributes" => %{
-                "avatar": user.avatar,
-                "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "access_token": user.access_token
-              }
-            }
-          })
-      {:error, reason} ->
+        |> render(SocialAppApi.UserView, "show.json-api", %{data: user})
+      {:error} ->
         conn
-        |> json(%{"data" =>
-            %{
-              "type" => "user",
-              "attributes" => %{
-                "status": reason
-              }
-            }
-          })
+        |> put_status(401)
+        |> render(SocialAppApi.ErrorView, "401.json-api")
     end
   end
 
@@ -90,8 +62,7 @@ defmodule SocialAppApi.AuthController do
         true ->
           # Successful login
           conn
-          # |> json(%{access_token: user.access_token}) # Return token to the client
-          |> render(SocialAppApi.UserView, "show.json-api", %{user: user})
+          |> render(SocialAppApi.UserView, "show.json-api", %{data: user})
 
         false ->
           # Unsuccessful login
@@ -120,7 +91,7 @@ defmodule SocialAppApi.AuthController do
       {:ok, user} ->
         conn
         |> put_status(:created)
-        |> render(SocialAppApi.UserView, "show.json-api", user: user)
+        |> render(SocialAppApi.UserView, "show.json-api", data: user)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

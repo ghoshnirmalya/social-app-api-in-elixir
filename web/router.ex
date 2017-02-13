@@ -3,6 +3,7 @@ defmodule SocialAppApi.Router do
 
   pipeline :api do
     plug :accepts, ["json", "json-api"]
+    plug JaSerializer.Deserializer
   end
 
   scope "/api/v1", SocialAppApi do

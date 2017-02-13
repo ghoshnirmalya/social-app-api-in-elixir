@@ -15,14 +15,14 @@ defmodule SocialAppApi.UserControllerTest do
   test "shows chosen resource", %{conn: conn} do
     user = Repo.insert! %User{}
     conn = get conn, user_path(conn, :show, user)
-    assert json_response(conn, 200)["data"] == %{"attributes" => %{"id" => user.id,
-      "email" => user.email,
-      "auth_provider" => user.auth_provider,
-      "first_name" => user.first_name,
-      "last_name" => user.last_name,
+    assert json_response(conn, 200)["data"] == %{"attributes" => %{"email" => user.email,
+      "auth-provider" => user.auth_provider,
+      "first-name" => user.first_name,
+      "last-name" => user.last_name,
       "avatar" => user.avatar,
-      "access_token" => user.access_token},
-      "type" => "user"}
+      "access-token" => user.access_token},
+      "type" => "user",
+      "id" => to_string(user.id)}
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do

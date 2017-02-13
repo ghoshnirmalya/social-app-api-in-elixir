@@ -13,9 +13,8 @@ config :social_app_api,
 config :social_app_api, SocialAppApi.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "swM9UavsN9Og2l4YuFCxuY9JkJbdP4MzMJ1S6kDAjmiandGNxHNbc9OMI7upMBmf",
-  render_errors: [view: SocialAppApi.ErrorView, accepts: ~w(json)],
-  pubsub: [name: SocialAppApi.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: SocialAppApi.PubSub, adapter: Phoenix.PubSub.PG2],
+  render_errors: [view: SocialAppApi.ErrorView, accepts: ~w(html json json-api)]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -42,6 +41,7 @@ config :ueberauth, Ueberauth,
       ] },
   ]
 
+# Ueberauth Strategy Config for Google oauth
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,
   client_id: System.get_env("GOOGLE_CLIENT_ID"),
   client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),

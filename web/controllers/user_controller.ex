@@ -5,7 +5,7 @@ defmodule SocialAppApi.UserController do
 
   def index(conn, _params) do
     users = Repo.all(User)
-    render(conn, "index.json-api", users: users)
+    render(conn, "index.json-api", data: users)
   end
 
   def create(conn, %{"user" => user_params}) do
@@ -16,7 +16,7 @@ defmodule SocialAppApi.UserController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", user_path(conn, :show, user))
-        |> render("show.json-api", user: user)
+        |> render("show.json-api", data: user)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -26,7 +26,7 @@ defmodule SocialAppApi.UserController do
 
   def show(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
-    render(conn, "show.json-api", user: user)
+    render(conn, "show.json-api", data: user)
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
@@ -35,7 +35,7 @@ defmodule SocialAppApi.UserController do
 
     case Repo.update(changeset) do
       {:ok, user} ->
-        render(conn, "show.json-api", user: user)
+        render(conn, "show.json-api", data: user)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

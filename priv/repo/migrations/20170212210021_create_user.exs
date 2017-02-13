@@ -13,5 +13,7 @@ defmodule SocialAppApi.Repo.Migrations.CreateUser do
       timestamps()
     end
 
+    # Unique email address constraint, via DB index
+    create index(:users, [:email], unique: true)
   end
 end
