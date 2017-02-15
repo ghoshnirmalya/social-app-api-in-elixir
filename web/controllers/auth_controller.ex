@@ -61,8 +61,13 @@ defmodule SocialAppApi.AuthController do
       cond do
         true ->
           # Successful login
+          # Encode a JWT
+          new_conn = Guardian.Plug.api_sign_in(conn, user)
+          jwt = Guardian.Plug.current_token(new_conn)
+
           conn
-          |> render(SocialAppApi.UserView, "show.json-api", %{data: user})
+          |> put_resp_header("authorization", "Bearer #{jwt}")
+          |> json(%{access_token: jwt}) # Return token to the client
 
         false ->
           # Unsuccessful login
@@ -72,10 +77,10 @@ defmodule SocialAppApi.AuthController do
       end
     rescue
       e ->
+        IO.inspect e # Print error to the console for debugging
+
         # Successful registration
         sign_up_user(conn, %{"user" => user})
-
-        IO.inspect e # Print error to the console for debugging
     end
   end
 
@@ -98,4 +103,16 @@ defmodule SocialAppApi.AuthController do
         |> render(SocialAppApi.ChangesetView, "error.json-api", changeset: changeset)
     end
   end
+
+  def unauthenticated(conn, params) do
+    conn
+     |> put_status(401)
+     |> render(SocialAppApi.ErrorView, "401.json-api")
+   end
+
+   def unauthorized(conn, params) do
+    conn
+     |> put_status(403)
+     |> render(SocialAppApi.ErrorView, "403.json-api")
+   end
 end

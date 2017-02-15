@@ -7,13 +7,30 @@ defmodule SocialAppApi.UserControllerTest do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
-  test "lists all entries on index", %{conn: conn} do
+  test "lists all entries on index" do
+    user = Repo.insert! %User{}
+    {:ok, jwt, full_claims} = Guardian.encode_and_sign(user)
+    {:ok, %{user: user, jwt: jwt, claims: full_claims}}
+    conn = build_conn()
+    |> put_req_header("authorization", "Bearer #{jwt}")
     conn = get conn, user_path(conn, :index)
-    assert json_response(conn, 200)["data"] == []
+    assert json_response(conn, 200)["data"] == [%{"attributes" =>
+      %{"access-token" => nil,
+      "auth-provider" => nil,
+      "avatar" => nil,
+      "email" => user.email,
+      "first-name" => nil,
+      "last-name" => nil},
+    "id" => to_string(user.id),
+    "type" => "user"}]
   end
 
-  test "shows chosen resource", %{conn: conn} do
+  test "shows chosen resource" do
     user = Repo.insert! %User{}
+    {:ok, jwt, full_claims} = Guardian.encode_and_sign(user)
+    {:ok, %{user: user, jwt: jwt, claims: full_claims}}
+    conn = build_conn()
+    |> put_req_header("authorization", "Bearer #{jwt}")
     conn = get conn, user_path(conn, :show, user)
     assert json_response(conn, 200)["data"] == %{"attributes" => %{"email" => user.email,
       "auth-provider" => user.auth_provider,
@@ -25,14 +42,12 @@ defmodule SocialAppApi.UserControllerTest do
       "id" => to_string(user.id)}
   end
 
-  test "renders page not found when id is nonexistent", %{conn: conn} do
-    assert_error_sent 404, fn ->
-      get conn, user_path(conn, :show, -1)
-    end
-  end
-
-  test "deletes chosen resource", %{conn: conn} do
+  test "deletes chosen resource" do
     user = Repo.insert! %User{}
+    {:ok, jwt, full_claims} = Guardian.encode_and_sign(user)
+    {:ok, %{user: user, jwt: jwt, claims: full_claims}}
+    conn = build_conn()
+    |> put_req_header("authorization", "Bearer #{jwt}")
     conn = delete conn, user_path(conn, :delete, user)
     assert response(conn, 204)
     refute Repo.get(User, user.id)

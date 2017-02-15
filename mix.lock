@@ -1,4 +1,5 @@
-%{"certifi": {:hex, :certifi, "0.7.0", "861a57f3808f7eb0c2d1802afeaae0fa5de813b0df0979153cbafcd853ababaf", [:rebar3], []},
+%{"base64url": {:hex, :base64url, "0.0.1", "36a90125f5948e3afd7be97662a1504b934dd5dac78451ca6e9abf85a10286be", [:rebar], []},
+  "certifi": {:hex, :certifi, "0.7.0", "861a57f3808f7eb0c2d1802afeaae0fa5de813b0df0979153cbafcd853ababaf", [:rebar3], []},
   "connection": {:hex, :connection, "1.0.4", "a1cae72211f0eef17705aaededacac3eb30e6625b04a6117c1b2db6ace7d5976", [:mix], []},
   "cors_plug": {:hex, :cors_plug, "1.2.1", "bbe1381a52e4a16e609cf3c4cbfde6884726a58b9a1a205db104dbdfc542f447", [:mix], [{:plug, "> 0.8.0", [hex: :plug, optional: false]}]},
   "cowboy": {:hex, :cowboy, "1.1.2", "61ac29ea970389a88eca5a65601460162d370a70018afe6f949a29dca91f3bb0", [:rebar3], [{:cowlib, "~> 1.0.2", [hex: :cowlib, optional: false]}, {:ranch, "~> 1.3.2", [hex: :ranch, optional: false]}]},
@@ -9,11 +10,13 @@
   "excoveralls": {:hex, :excoveralls, "0.5.7", "5d26e4a7cdf08294217594a1b0643636accc2ad30e984d62f1d166f70629ff50", [:mix], [{:exjsx, "~> 3.0", [hex: :exjsx, optional: false]}, {:hackney, ">= 0.12.0", [hex: :hackney, optional: false]}]},
   "exjsx": {:hex, :exjsx, "3.2.1", "1bc5bf1e4fd249104178f0885030bcd75a4526f4d2a1e976f4b428d347614f0f", [:mix], [{:jsx, "~> 2.8.0", [hex: :jsx, optional: false]}]},
   "gettext": {:hex, :gettext, "0.13.1", "5e0daf4e7636d771c4c71ad5f3f53ba09a9ae5c250e1ab9c42ba9edccc476263", [:mix], []},
+  "guardian": {:hex, :guardian, "0.14.2", "b1db9ef172b3d47259eed3cf463321a3ed2cfadee471f271810b0e4c18b2ac22", [:mix], [{:jose, "~> 1.8", [hex: :jose, optional: false]}, {:phoenix, "~> 1.2.0", [hex: :phoenix, optional: true]}, {:plug, "~> 1.0", [hex: :plug, optional: false]}, {:poison, ">= 1.3.0", [hex: :poison, optional: false]}, {:uuid, ">=1.1.1", [hex: :uuid, optional: false]}]},
   "hackney": {:hex, :hackney, "1.6.5", "8c025ee397ac94a184b0743c73b33b96465e85f90a02e210e86df6cbafaa5065", [:rebar3], [{:certifi, "0.7.0", [hex: :certifi, optional: false]}, {:idna, "1.2.0", [hex: :idna, optional: false]}, {:metrics, "1.0.1", [hex: :metrics, optional: false]}, {:mimerl, "1.0.2", [hex: :mimerl, optional: false]}, {:ssl_verify_fun, "1.1.1", [hex: :ssl_verify_fun, optional: false]}]},
   "httpoison": {:hex, :httpoison, "0.11.0", "b9240a9c44fc46fcd8618d17898859ba09a3c1b47210b74316c0ffef10735e76", [:mix], [{:hackney, "~> 1.6.3", [hex: :hackney, optional: false]}]},
   "idna": {:hex, :idna, "1.2.0", "ac62ee99da068f43c50dc69acf700e03a62a348360126260e87f2b54eced86b2", [:rebar3], []},
   "inflex": {:hex, :inflex, "1.8.0", "7cfc752ae244b30b42ac9cf4c092771b485bc3424139aba4a933e54be8c63931", [:mix], []},
   "ja_serializer": {:hex, :ja_serializer, "0.11.2", "952b59b480e656e0bd991c5822dda4dfc6c507f1c55d6eaea363cd84e6002e2c", [:mix], [{:inflex, "~> 1.4", [hex: :inflex, optional: false]}, {:plug, "> 1.0.0", [hex: :plug, optional: false]}, {:poison, "~> 1.4 or ~> 2.0", [hex: :poison, optional: false]}, {:scrivener, "~> 1.2 or ~> 2.0", [hex: :scrivener, optional: true]}]},
+  "jose": {:hex, :jose, "1.8.1", "840ebf379dbdc36a2856d579d911faefe0810270efa97113423af9f76ca7ca0c", [:mix, :rebar3], [{:base64url, "~> 0.0.1", [hex: :base64url, optional: false]}]},
   "jsx": {:hex, :jsx, "2.8.2", "7acc7d785b5abe8a6e9adbde926a24e481f29956dd8b4df49e3e4e7bcc92a018", [:mix, :rebar3], []},
   "metrics": {:hex, :metrics, "1.0.1", "25f094dea2cda98213cecc3aeff09e940299d950904393b2a29d191c346a8486", [:rebar3], []},
   "mime": {:hex, :mime, "1.0.1", "05c393850524767d13a53627df71beeebb016205eb43bfbd92d14d24ec7a1b51", [:mix], []},
@@ -36,4 +39,5 @@
   "ueberauth_google": {:hex, :ueberauth_google, "0.5.0", "49b6dd60cc2a4b060767481df04528c6cd6de2236b64d6dbe4aa02d1058ff957", [:mix], [{:oauth2, "~> 0.8", [hex: :oauth2, optional: false]}, {:ueberauth, "~> 0.4", [hex: :ueberauth, optional: false]}]},
   "ueberauth_identity": {:hex, :ueberauth_identity, "0.2.3", "216f18ca24347f6b3dd0e5f4342b6fef7a4027fad0d133f1c454d51b7eaac55b", [:mix], [{:plug, "~> 1.0", [hex: :plug, optional: false]}, {:ueberauth, "~> 0.2", [hex: :ueberauth, optional: false]}]},
   "ueberauth_slack": {:hex, :ueberauth_slack, "0.3.0", "ec8f6c96e1d41a458a00b5d8cd918c1f387998884fe4636e67dd88b1bd06f928", [:mix], [{:oauth2, "~> 0.5", [hex: :oauth2, optional: false]}, {:ueberauth, "~> 0.2", [hex: :ueberauth, optional: false]}]},
-  "ueberauth_twitter": {:hex, :ueberauth_twitter, "0.2.3", "e601d6d9c610f7a1cf747a0de92da939ea6246ca8fcfe541cfdf5f2f35b9517b", [:mix], [{:httpoison, "~> 0.7", [hex: :httpoison, optional: false]}, {:ueberauth, "~> 0.2", [hex: :ueberauth, optional: false]}]}}
+  "ueberauth_twitter": {:hex, :ueberauth_twitter, "0.2.3", "e601d6d9c610f7a1cf747a0de92da939ea6246ca8fcfe541cfdf5f2f35b9517b", [:mix], [{:httpoison, "~> 0.7", [hex: :httpoison, optional: false]}, {:ueberauth, "~> 0.2", [hex: :ueberauth, optional: false]}]},
+  "uuid": {:hex, :uuid, "1.1.6", "4927232f244e69c6e255643014c2d639dad5b8313dc2a6976ee1c3724e6ca60d", [:mix], []}}
