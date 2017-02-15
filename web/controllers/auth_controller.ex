@@ -62,8 +62,7 @@ defmodule SocialAppApi.AuthController do
         true ->
           # Successful login
           # Encode a JWT
-          new_conn = Guardian.Plug.api_sign_in(conn, user)
-          jwt = Guardian.Plug.current_token(new_conn)
+          { :ok, jwt, _ } = Guardian.encode_and_sign(user, :api)
 
           conn
           |> put_resp_header("authorization", "Bearer #{jwt}")
