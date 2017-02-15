@@ -24,8 +24,8 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :social_app_api, SocialAppApi.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "nirmalyaghosh",
-  password: "",
-  database: "social_app_api_dev",
-  hostname: "localhost",
+  username: System.get_env("DB_USERNAME_DEV"),
+  password: System.get_env("DB_PASSWORD_DEV"),
+  database: System.get_env("DB_NAME_DEV"),
+  hostname: System.get_env("DB_HOSTNAME_DEV"),
   pool_size: 10

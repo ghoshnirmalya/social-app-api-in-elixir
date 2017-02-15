@@ -25,7 +25,8 @@ defmodule SocialAppApi.Mixfile do
   def application do
     [mod: {SocialAppApi, []},
      applications: [:phoenix, :phoenix_pubsub, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex]]
+                    :phoenix_ecto, :postgrex, :ueberauth, :oauth,
+                    :ueberauth_google]]
   end
 
   # Specifies which paths to compile per environment.
@@ -43,7 +44,12 @@ defmodule SocialAppApi.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:cors_plug, "~> 1.2"},
-     {:excoveralls, "~> 0.5.7", only: :test}]
+     {:excoveralls, "~> 0.5.7", only: :test},
+     {:oauth, github: "tim/erlang-oauth"},
+     {:ueberauth, "~> 0.4"},
+     {:ueberauth_google, "~> 0.2"},
+     {:ja_serializer, "~> 0.11.2"},
+     {:guardian, "~> 0.14.2"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
