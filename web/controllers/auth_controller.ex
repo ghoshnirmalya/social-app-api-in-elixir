@@ -62,7 +62,7 @@ defmodule SocialAppApi.AuthController do
         true ->
           # Successful login
           # Encode a JWT
-          { :ok, jwt, _ } = Guardian.encode_and_sign(user, :api)
+          { :ok, jwt, _ } = Guardian.encode_and_sign(user, :token)
 
           conn
           |> put_resp_header("authorization", "Bearer #{jwt}")
@@ -93,25 +93,40 @@ defmodule SocialAppApi.AuthController do
 
     case Repo.insert changeset do
       {:ok, user} ->
+        # Encode a JWT
+        { :ok, jwt, _ } = Guardian.encode_and_sign(user, :token)
+
         conn
-        |> put_status(:created)
-        |> render(SocialAppApi.UserView, "show.json-api", data: user)
+          |> put_resp_header("authorization", "Bearer #{jwt}")
+          |> json(%{access_token: jwt}) # Return token to the client
       {:error, changeset} ->
         conn
-        |> put_status(:unprocessable_entity)
-        |> render(SocialAppApi.ChangesetView, "error.json-api", changeset: changeset)
+        |> put_status(422)
+        |> render(SocialAppApi.ErrorView, "422.json-api")
     end
   end
 
   def unauthenticated(conn, params) do
-    conn
-     |> put_status(401)
-     |> render(SocialAppApi.ErrorView, "401.json-api")
-   end
+  conn
+    |> put_status(401)
+    |> render(SocialAppApi.ErrorView, "401.json-api")
+  end
 
-   def unauthorized(conn, params) do
+  def unauthorized(conn, params) do
     conn
-     |> put_status(403)
-     |> render(SocialAppApi.ErrorView, "403.json-api")
-   end
+    |> put_status(403)
+    |> render(SocialAppApi.ErrorView, "403.json-api")
+  end
+
+  def already_authenticated(conn, params) do
+    conn
+    |> put_status(200)
+    |> render(SocialAppApi.ErrorView, "200.json-api")
+  end
+
+  def no_resource(conn, params) do
+    conn
+    |> put_status(404)
+    |> render(SocialAppApi.ErrorView, "404.json-api")
+  end
 end
