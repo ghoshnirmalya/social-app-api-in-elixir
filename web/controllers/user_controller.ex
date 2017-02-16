@@ -21,7 +21,7 @@ defmodule SocialAppApi.UserController do
         |> render("show.json-api", data: user)
       {:error, changeset} ->
         conn
-        |> put_status(:unprocessable_entity)
+        |> put_status(422)
         |> render(SocialAppApi.ChangesetView, "error.json-api", changeset: changeset)
     end
   end
@@ -40,7 +40,7 @@ defmodule SocialAppApi.UserController do
         render(conn, "show.json-api", data: user)
       {:error, changeset} ->
         conn
-        |> put_status(:unprocessable_entity)
+        |> put_status(422)
         |> render(SocialAppApi.ChangesetView, "error.json-api", changeset: changeset)
     end
   end

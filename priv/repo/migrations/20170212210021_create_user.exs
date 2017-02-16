@@ -8,7 +8,6 @@ defmodule SocialAppApi.Repo.Migrations.CreateUser do
       add :first_name, :string
       add :last_name, :string
       add :avatar, :string
-      add :access_token, :string
 
       timestamps()
     end

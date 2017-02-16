@@ -7,7 +7,6 @@ defmodule SocialAppApi.User do
     field :first_name, :string
     field :last_name, :string
     field :avatar, :string
-    field :access_token, :string
 
     timestamps()
   end
@@ -17,7 +16,8 @@ defmodule SocialAppApi.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:email, :auth_provider, :first_name, :last_name, :avatar, :access_token])
-    |> validate_required([:email, :auth_provider, :first_name, :last_name, :avatar, :access_token])
+    |> cast(params, [:email, :auth_provider, :first_name, :last_name, :avatar])
+    |> validate_required([:email, :auth_provider, :first_name, :last_name, :avatar])
+    |> unique_constraint(:email)
   end
 end
