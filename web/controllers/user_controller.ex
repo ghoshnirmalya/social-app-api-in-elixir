@@ -32,16 +32,36 @@ defmodule SocialAppApi.UserController do
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
-    user = Repo.get!(User, id)
-    changeset = User.changeset(user, user_params)
+    try do
+      # get data for the user in the request
+      user = Repo.get!(User, id)
 
-    case Repo.update(changeset) do
-      {:ok, user} ->
-        render(conn, "show.json-api", data: user)
-      {:error, changeset} ->
+      # get current user
+      current_user = conn
+      |> Guardian.Plug.current_resource
+
+      if user.id === current_user.id do
+        # do the update operation if the user is authorized
+        changeset = User.changeset(user, user_params)
+
+        case Repo.update(changeset) do
+          {:ok, user} ->
+            render(conn, "show.json-api", data: user)
+          {:error, changeset} ->
+            conn
+            |> put_status(422)
+            |> render(SocialAppApi.ChangesetView, "error.json-api", changeset: changeset)
+        end
+      else
         conn
-        |> put_status(422)
-        |> render(SocialAppApi.ChangesetView, "error.json-api", changeset: changeset)
+        |> render(SocialAppApi.ErrorView, "401.json-api")
+      end
+    rescue
+      e ->
+        IO.inspect e # Print error to the console for debugging
+
+        conn
+        |> render(SocialAppApi.ErrorView, "404.json-api")
     end
   end
 

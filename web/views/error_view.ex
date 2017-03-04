@@ -13,7 +13,7 @@ defmodule SocialAppApi.ErrorView do
   end
 
   def render("404.json-api", _assigns) do
-    %{title: "Page not found", code: 404}
+    %{title: "Resource not found", code: 404}
     |> JaSerializer.ErrorSerializer.format
   end
 

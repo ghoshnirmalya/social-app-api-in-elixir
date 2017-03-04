@@ -16,7 +16,7 @@ defmodule SocialAppApi.ErrorViewTest do
 
   test "renders 404.json-api" do
     assert render(SocialAppApi.ErrorView, "404.json-api", []) ==
-           %{"errors" => [%{code: 404, title: "Page not found"}], "jsonapi" => %{"version" => "1.0"}}
+           %{"errors" => [%{code: 404, title: "Resource not found"}], "jsonapi" => %{"version" => "1.0"}}
   end
 
   test "renders 422.json-api" do
