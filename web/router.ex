@@ -19,6 +19,8 @@ defmodule SocialAppApi.Router do
     resources "/users", UserController, except: [:new, :edit]
     get "/user/current", UserController, :current, as: :current_user
     delete "/logout", AuthController, :delete
+
+    resources "/blogs", BlogController, except: [:new, :edit]
   end
 
   scope "/api/v1/auth", SocialAppApi do
