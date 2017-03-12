@@ -4,11 +4,12 @@ defmodule SocialAppApi.Repo.Migrations.CreateBlog do
   def change do
     create table(:blogs) do
       add :title, :string
-      add :body, :string
-      add :author_id, :integer
+      add :body, :text
+      add :author_id, references(:users, on_delete: :delete_all)
 
       timestamps()
     end
+    create index(:blogs, [:author_id])
 
   end
 end

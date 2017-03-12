@@ -4,7 +4,7 @@ defmodule SocialAppApi.Blog do
   schema "blogs" do
     field :title, :string
     field :body, :string
-    field :author_id, :integer
+    belongs_to :author, SocialAppApi.Author
 
     timestamps()
   end
@@ -14,7 +14,7 @@ defmodule SocialAppApi.Blog do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :body, :author_id])
-    |> validate_required([:title, :body, :author_id])
+    |> cast(params, [:title, :body])
+    |> validate_required([:title, :body])
   end
 end

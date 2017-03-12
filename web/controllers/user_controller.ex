@@ -27,34 +27,38 @@ defmodule SocialAppApi.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    user = Repo.get!(User, id)
-    render(conn, "show.json-api", data: user)
+    if id === "current" do
+      user = conn
+      |> Guardian.Plug.current_resource
+
+      conn
+      |> render(SocialAppApi.UserView, "show.json-api", data: user)
+    else
+      user = Repo.get!(User, id)
+      render(conn, "show.json-api", data: user)
+    end
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
     try do
-      # get data for the user in the request
-      user = Repo.get!(User, id)
-
       # get current user
       current_user = conn
       |> Guardian.Plug.current_resource
 
-      if user.id === current_user.id do
-        # do the update operation if the user is authorized
-        changeset = User.changeset(user, user_params)
+      user = User
+      |> where(id: ^current_user.id)
+      |> Repo.one!
 
-        case Repo.update(changeset) do
-          {:ok, user} ->
-            render(conn, "show.json-api", data: user)
-          {:error, changeset} ->
-            conn
-            |> put_status(422)
-            |> render(SocialAppApi.ChangesetView, "error.json-api", changeset: changeset)
-        end
-      else
-        conn
-        |> render(SocialAppApi.ErrorView, "401.json-api")
+      # do the update operation if the user is authorized
+      changeset = User.changeset(user, user_params)
+
+      case Repo.update(changeset) do
+        {:ok, user} ->
+          render(conn, "show.json-api", data: user)
+        {:error, changeset} ->
+          conn
+          |> put_status(422)
+          |> render(SocialAppApi.ChangesetView, "error.json-api", changeset: changeset)
       end
     rescue
       e ->
@@ -67,24 +71,20 @@ defmodule SocialAppApi.UserController do
 
   def delete(conn, %{"id" => id}) do
     try do
-      # get data for the user in the request
-      user = Repo.get!(User, id)
-
       # get current user
       current_user = conn
       |> Guardian.Plug.current_resource
 
-      if user.id === current_user.id do
-        # do the update operation if the user is authorized
-        # Here we use delete! (with a bang) because we expect
-        # it to always work (and if it does not, it will raise).
-        Repo.delete!(user)
+      user = User
+      |> where(id: ^current_user.id)
+      |> Repo.one!
 
-        send_resp(conn, :no_content, "")
-      else
-        conn
-        |> render(SocialAppApi.ErrorView, "401.json-api")
-      end
+      # do the update operation if the user is authorized
+      # Here we use delete! (with a bang) because we expect
+      # it to always work (and if it does not, it will raise).
+      Repo.delete!(user)
+
+      send_resp(conn, :no_content, "")
     rescue
       e ->
         IO.inspect e # Print error to the console for debugging
@@ -92,13 +92,5 @@ defmodule SocialAppApi.UserController do
         conn
         |> render(SocialAppApi.ErrorView, "404.json-api")
     end
-  end
-
-  def current(conn, _) do
-    user = conn
-    |> Guardian.Plug.current_resource
-
-    conn
-    |> render(SocialAppApi.UserView, "show.json-api", data: user)
   end
 end

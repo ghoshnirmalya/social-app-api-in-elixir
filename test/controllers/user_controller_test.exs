@@ -15,8 +15,7 @@ defmodule SocialAppApi.UserControllerTest do
     |> put_req_header("authorization", "Bearer #{jwt}")
     conn = get conn, user_path(conn, :index)
     assert json_response(conn, 200)["data"] == [%{"attributes" =>
-      %{"auth-provider" => nil,
-      "avatar" => nil,
+      %{"avatar" => nil,
       "email" => user.email,
       "first-name" => nil,
       "last-name" => nil},
@@ -32,7 +31,6 @@ defmodule SocialAppApi.UserControllerTest do
     |> put_req_header("authorization", "Bearer #{jwt}")
     conn = get conn, user_path(conn, :show, user)
     assert json_response(conn, 200)["data"] == %{"attributes" => %{"email" => user.email,
-      "auth-provider" => user.auth_provider,
       "first-name" => user.first_name,
       "last-name" => user.last_name,
       "avatar" => user.avatar},

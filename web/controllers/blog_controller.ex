@@ -5,6 +5,13 @@ defmodule SocialAppApi.BlogController do
 
   plug Guardian.Plug.EnsureAuthenticated, handler: SocialAppApi.AuthController
 
+  def index(conn, %{"user_id" => user_id}) do
+    blogs = Blog
+    |> where(author_id: ^user_id)
+    |> Repo.all
+    render(conn, "index.json-api", data: blogs)
+  end
+
   def index(conn, _params) do
     blogs = Repo.all(Blog)
     render(conn, "index.json-api", data: blogs)
@@ -33,36 +40,37 @@ defmodule SocialAppApi.BlogController do
   end
 
   def show(conn, %{"id" => id}) do
-    blog = Repo.get!(Blog, id)
-    render(conn, "show.json-api", data: blog)
+    try do
+      blog = Repo.get!(Blog, id)
+      render(conn, "show.json-api", data: blog)
+    rescue
+      e ->
+        IO.inspect e # Print error to the console for debugging
+
+        conn
+        |> render(SocialAppApi.ErrorView, "404.json-api")
+    end
   end
 
   def update(conn, %{"id" => id, "blog" => blog_params}) do
     try do
-      blog = Repo.get!(Blog, id)
-
-      # get author_id
-      author_id = blog.author_id
-
       # get current user
       current_user = conn
       |> Guardian.Plug.current_resource
 
-      if author_id === current_user.id do
-        # do the operation if the current_user is the author
-        changeset = Blog.changeset(blog, blog_params)
+      blog = Blog
+      |> where(author_id: ^current_user.id, id: ^id)
+      |> Repo.one!
 
-        case Repo.update(changeset) do
-          {:ok, blog} ->
-            render(conn, "show.json-api", data: blog)
-          {:error, changeset} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> render(SocialAppApi.ChangesetView, "error.json-api", changeset: changeset)
-        end
-      else
-        conn
-        |> render(SocialAppApi.ErrorView, "401.json-api")
+      changeset = Blog.changeset(blog, blog_params)
+
+      case Repo.update(changeset) do
+        {:ok, blog} ->
+          render(conn, "show.json-api", data: blog)
+        {:error, changeset} ->
+          conn
+          |> put_status(:unprocessable_entity)
+          |> render(SocialAppApi.ChangesetView, "error.json-api", changeset: changeset)
       end
     rescue
       e ->
@@ -75,24 +83,19 @@ defmodule SocialAppApi.BlogController do
 
   def delete(conn, %{"id" => id}) do
     try do
-      blog = Repo.get!(Blog, id)
-      # get author_id
-      author_id = blog.author_id
-
       # get current user
       current_user = conn
       |> Guardian.Plug.current_resource
 
-      if author_id === current_user.id do
-        # Here we use delete! (with a bang) because we expect
-        # it to always work (and if it does not, it will raise).
-        Repo.delete!(blog)
+      blog = Blog
+      |> where(author_id: ^current_user.id, id: ^id)
+      |> Repo.one!
 
-        send_resp(conn, :no_content, "")
-      else
-        conn
-        |> render(SocialAppApi.ErrorView, "401.json-api")
-      end
+      # Here we use delete! (with a bang) because we expect
+      # it to always work (and if it does not, it will raise).
+      Repo.delete!(blog)
+
+      send_resp(conn, :no_content, "")
     rescue
       e ->
         IO.inspect e # Print error to the console for debugging
