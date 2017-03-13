@@ -10,7 +10,7 @@ defmodule SocialAppApi.UserController do
     render(conn, "index.json-api", data: users)
   end
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, %{"data" => %{"type" => "user", "attributes" => user_params}}) do
     changeset = User.changeset(%User{}, user_params)
 
     case Repo.insert(changeset) do
@@ -39,7 +39,7 @@ defmodule SocialAppApi.UserController do
     end
   end
 
-  def update(conn, %{"id" => id, "user" => user_params}) do
+  def update(conn, %{"data" => %{"type" => "user", "id" => id, "attributes" => user_params}}) do
     try do
       # get current user
       current_user = conn
@@ -65,7 +65,7 @@ defmodule SocialAppApi.UserController do
         IO.inspect e # Print error to the console for debugging
 
         conn
-        |> render(SocialAppApi.ErrorView, "404.json-api")
+        |> render(SocialAppApi.ErrorView, "401.json-api")
     end
   end
 
@@ -90,7 +90,7 @@ defmodule SocialAppApi.UserController do
         IO.inspect e # Print error to the console for debugging
 
         conn
-        |> render(SocialAppApi.ErrorView, "404.json-api")
+        |> render(SocialAppApi.ErrorView, "401.json-api")
     end
   end
 end

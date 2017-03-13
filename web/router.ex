@@ -20,13 +20,18 @@ defmodule SocialAppApi.Router do
     delete "/logout", AuthController, :delete
 
     # users
-    resources "/users", UserController, only: [:show, :index, :current, :delete] do
+    resources "/users", UserController, except: [:new, :edit] do
       get "/blogs", BlogController, :index, as: :blogs
       get "/current", UserController, :current, as: :current_user
     end
 
     # blogs
-    resources "/blogs", BlogController, except: [:new, :edit]
+    resources "/blogs", BlogController, except: [:new, :edit] do
+      get "/comments", BlogCommentController, :index, as: :blog_comments
+    end
+
+    #blog comments
+    resources "/blog_comments", BlogCommentController, except: [:new, :edit]
   end
 
   scope "/api/v1/auth", SocialAppApi do

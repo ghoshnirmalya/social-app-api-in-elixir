@@ -16,7 +16,7 @@ defmodule SocialAppApi.BlogControllerTest do
     Enum.each ["fourth blog", "fifth blog"], fn title ->
       Repo.insert! %SocialAppApi.Blog{author_id: other_user.id, title: title}
     end
-   end
+  end
 
   setup %{conn: conn} do
     user = Repo.insert! %SocialAppApi.User{}
@@ -64,36 +64,30 @@ defmodule SocialAppApi.BlogControllerTest do
     }
   end
 
-  test "does not show resource and instead throw error when id is nonexistent", %{conn: conn, user: _user} do
-    assert_error_sent 404, fn ->
-      get conn, blog_path(conn, :show, -1)
-    end
-  end
-
   test "creates and renders resource when data is valid", %{conn: conn, user: _user} do
-    conn = post conn, blog_path(conn, :create), blog: @valid_attrs
+    conn = post conn, blog_path(conn, :create), data: %{type: "blog", attributes: @valid_attrs}
     assert json_response(conn, 201)["data"]["id"]
   end
 
   test "does not create resource and renders errors when data is invalid", %{conn: conn, user: _user} do
-    conn = post conn, blog_path(conn, :create), blog: @invalid_attrs
+    conn = post conn, blog_path(conn, :create), data: %{type: "blog", attributes: @invalid_attrs}
     assert json_response(conn, 422)["errors"] != %{}
   end
 
   test "updates and renders chosen resource when data is valid", %{conn: conn, user: user} do
     blog = Repo.insert! %Blog{author_id: user.id, title: "A blog"}
-    conn = put conn, blog_path(conn, :update, blog), blog: @valid_attrs
+    conn = put conn, blog_path(conn, :update, blog), data: %{id: blog.id, type: "blog", attributes: @valid_attrs}
     assert json_response(conn, 200)["data"]["id"]
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn, user: user} do
     blog = Repo.insert! %Blog{author_id: user.id}
-    conn = put conn, blog_path(conn, :update, blog), blog: @invalid_attrs
+    conn = put conn, blog_path(conn, :update, blog), data: %{id: blog.id, type: "blog", attributes: @invalid_attrs}
     assert json_response(conn, 422)["errors"] != %{}
   end
 
   test "deletes chosen resource", %{conn: conn, user: user} do
-    blog = Repo.insert! %Blog{author_id: user.id }
+    blog = Repo.insert! %Blog{author_id: user.id}
     conn = delete conn, blog_path(conn, :delete, blog)
     assert response(conn, 204)
     refute Repo.get(Blog, blog.id)
