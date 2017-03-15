@@ -23,6 +23,7 @@ defmodule SocialAppApi.Router do
     resources "/users", UserController, except: [:new, :edit] do
       get "/blogs", BlogController, :index, as: :blogs
       get "/current", UserController, :current, as: :current_user
+      get "/followers", FollowerController, :index, as: :followers
     end
 
     # blogs
@@ -32,6 +33,9 @@ defmodule SocialAppApi.Router do
 
     #blog comments
     resources "/blog_comments", BlogCommentController, except: [:new, :edit]
+
+    # followers
+    resources "/followers", FollowerController, except: [:new, :index]
   end
 
   scope "/api/v1/auth", SocialAppApi do
