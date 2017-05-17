@@ -3,6 +3,7 @@ defmodule SocialAppApi.UserSocket do
 
   ## Channels
   # channel "room:*", SocialAppApi.RoomChannel
+  channel "blog", SocialAppApi.BlogChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

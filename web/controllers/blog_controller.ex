@@ -66,6 +66,8 @@ defmodule SocialAppApi.BlogController do
 
       case Repo.update(changeset) do
         {:ok, blog} ->
+          SocialAppApi.BlogChannel.broadcast_change(blog, current_user)
+
           render(conn, "show.json-api", data: blog)
         {:error, changeset} ->
           conn
