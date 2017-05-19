@@ -7,6 +7,8 @@ defmodule SocialAppApi.User do
     field :first_name, :string
     field :last_name, :string
     field :avatar, :string
+    has_many :blogs, SocialAppApi.Blog
+    has_many :followers, SocialAppApi.Follower
 
     timestamps()
   end

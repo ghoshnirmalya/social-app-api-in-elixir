@@ -1,4 +1,4 @@
-defmodule SocialAppApi.BlogChannelTest do
+defmodule SocialAppApi.BlogsChannelTest do
   use SocialAppApi.ChannelCase
 
   alias SocialAppApi.BlogChannel

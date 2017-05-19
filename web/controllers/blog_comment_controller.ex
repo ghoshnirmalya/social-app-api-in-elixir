@@ -8,6 +8,7 @@ defmodule SocialAppApi.BlogCommentController do
   def index(conn, %{"blog_id" => blog_id}) do
     blog_comments = BlogComment
     |> where(blog_id: ^blog_id)
+    |> order_by([t], asc: t.id)
     |> Repo.all
     render(conn, "index.json-api", data: blog_comments)
   end
@@ -30,6 +31,8 @@ defmodule SocialAppApi.BlogCommentController do
 
     case Repo.insert(changeset) do
       {:ok, blog_comment} ->
+        SocialAppApi.BlogCommentsChannel.broadcast_change(blog_comment, current_user, blog_id)
+
         conn
         |> put_status(:created)
         |> put_resp_header("location", blog_comment_path(conn, :show, blog_comment))
@@ -69,6 +72,8 @@ defmodule SocialAppApi.BlogCommentController do
 
       case Repo.update(changeset) do
         {:ok, blog_comment} ->
+          SocialAppApi.BlogCommentsChannel.broadcast_change(blog_comment, current_user, blog_id)
+
           render(conn, "show.json-api", data: blog_comment)
         {:error, changeset} ->
           conn

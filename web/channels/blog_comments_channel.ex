@@ -1,11 +1,11 @@
-defmodule SocialAppApi.BlogChannel do
+defmodule SocialAppApi.BlogCommentsChannel do
   use SocialAppApi.Web, :channel
 
   import SocialAppApi.Router.Helpers
   alias SocialAppApi.Endpoint
 
-  def join("blog", payload, socket) do
-    {:ok, "Joined blog", socket}
+  def join("comments", payload, socket) do
+    {:ok, "Joined comments", socket}
   end
 
   def handle_out(event, payload, socket) do
@@ -32,15 +32,19 @@ defmodule SocialAppApi.BlogChannel do
   #   true
   # end
 
-  def broadcast_change(blog, user) do
+  def broadcast_change(comment, user, blod_id) do
     payload = %{
-      "id" => to_string(blog.id),
-      "type" => "blog",
+      "id" => to_string(comment.id),
+      "type" => "blog-comment",
       "attributes" => %{
-        "title" => blog.title,
-        "body" => blog.body
+        "body" => comment.body
       },
       "relationships" => %{
+        "blog" => %{
+          "links" => %{
+            "related" => "#{blog_url(Endpoint, :index)}/#{blod_id}"
+          }
+        },
         "author" => %{
           "links" => %{
             "related" => "#{user_url(Endpoint, :index)}/#{user.id}"
@@ -49,6 +53,6 @@ defmodule SocialAppApi.BlogChannel do
       }
     }
 
-    SocialAppApi.Endpoint.broadcast("blog", "app/blogs-page/FETCH_UPDATED_BLOGS_REQUEST", payload)
+    SocialAppApi.Endpoint.broadcast("comments", "app/blog-page/HAS_UPDATED_OR_NEW_COMMENTS", payload)
   end
 end

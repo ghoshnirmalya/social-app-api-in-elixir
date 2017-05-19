@@ -13,7 +13,9 @@ defmodule SocialAppApi.BlogController do
   end
 
   def index(conn, _params) do
-    blogs = Repo.all(Blog)
+    query = from(b in Blog, order_by: [asc: b.id])
+    blogs = Repo.all(query)
+
     render(conn, "index.json-api", data: blogs)
   end
 
@@ -28,6 +30,8 @@ defmodule SocialAppApi.BlogController do
 
     case Repo.insert(changeset) do
       {:ok, blog} ->
+        SocialAppApi.BlogsChannel.broadcast_change(blog, current_user)
+
         conn
         |> put_status(:created)
         |> put_resp_header("location", blog_path(conn, :show, blog))
@@ -66,7 +70,7 @@ defmodule SocialAppApi.BlogController do
 
       case Repo.update(changeset) do
         {:ok, blog} ->
-          SocialAppApi.BlogChannel.broadcast_change(blog, current_user)
+          SocialAppApi.BlogsChannel.broadcast_change(blog, current_user)
 
           render(conn, "show.json-api", data: blog)
         {:error, changeset} ->
