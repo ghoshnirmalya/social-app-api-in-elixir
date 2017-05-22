@@ -31,11 +31,14 @@ defmodule SocialAppApi.Router do
       get "/comments", BlogCommentController, :index, as: :blog_comments
     end
 
-    #blog comments
+    # blog comments
     resources "/blog_comments", BlogCommentController, except: [:new, :edit]
 
     # followers
-    resources "/followers", FollowerController, except: [:new, :index]
+    resources "/followers", FollowerController, except: [:new, :edit]
+
+    # media
+    resources "/media", MediaController, except: [:new, :edit]
   end
 
   scope "/api/v1/auth", SocialAppApi do

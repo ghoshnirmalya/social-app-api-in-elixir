@@ -1,4 +1,4 @@
-defmodule SocialAppApi.BlogsChannel do
+defmodule SocialAppApi.BlogChannel do
   use SocialAppApi.Web, :channel
 
   import SocialAppApi.Router.Helpers

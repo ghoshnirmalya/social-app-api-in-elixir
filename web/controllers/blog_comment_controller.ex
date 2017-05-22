@@ -31,7 +31,7 @@ defmodule SocialAppApi.BlogCommentController do
 
     case Repo.insert(changeset) do
       {:ok, blog_comment} ->
-        SocialAppApi.BlogCommentsChannel.broadcast_change(blog_comment, current_user, blog_id)
+        SocialAppApi.BlogCommentChannel.broadcast_change(blog_comment, current_user, blog_id)
 
         conn
         |> put_status(:created)
@@ -72,7 +72,7 @@ defmodule SocialAppApi.BlogCommentController do
 
       case Repo.update(changeset) do
         {:ok, blog_comment} ->
-          SocialAppApi.BlogCommentsChannel.broadcast_change(blog_comment, current_user, blog_id)
+          SocialAppApi.BlogCommentChannel.broadcast_change(blog_comment, current_user, blog_id)
 
           render(conn, "show.json-api", data: blog_comment)
         {:error, changeset} ->

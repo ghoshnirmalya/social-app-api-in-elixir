@@ -1,41 +1,41 @@
-defmodule SocialAppApi.BlogController do
+defmodule SocialAppApi.MediaController do
   use SocialAppApi.Web, :controller
 
-  alias SocialAppApi.Blog
+  alias SocialAppApi.Media
 
   plug Guardian.Plug.EnsureAuthenticated, handler: SocialAppApi.AuthController
 
   def index(conn, %{"user_id" => user_id}) do
-    blogs = Blog
-    |> where(author_id: ^user_id)
+    media = Media
+    |> where(uploader_id: ^user_id)
     |> Repo.all
-    render(conn, "index.json-api", data: blogs)
+    render(conn, "index.json-api", data: media)
   end
 
   def index(conn, _params) do
-    query = from(b in Blog, order_by: [asc: b.id])
-    blogs = Repo.all(query)
+    query = from(b in Media, order_by: [asc: b.id])
+    media = Repo.all(query)
 
-    render(conn, "index.json-api", data: blogs)
+    render(conn, "index.json-api", data: media)
   end
 
-  def create(conn, %{"data" => %{"type" => "blog", "attributes" => blog_params}}) do
+  def create(conn, %{"data" => %{"type" => "media", "attributes" => media_params}}) do
     # get current user
     current_user = conn
     |> Guardian.Plug.current_resource
 
-    changeset = Blog.changeset(%Blog{
-      author_id: current_user.id
-    }, blog_params)
+    changeset = Media.changeset(%Media{
+      uploader_id: current_user.id
+    }, media_params)
 
     case Repo.insert(changeset) do
-      {:ok, blog} ->
-        SocialAppApi.BlogChannel.broadcast_change(blog, current_user)
+      {:ok, media} ->
+        SocialAppApi.MediaChannel.broadcast_create(media, current_user)
 
         conn
         |> put_status(:created)
-        |> put_resp_header("location", blog_path(conn, :show, blog))
-        |> render("show.json-api", data: blog)
+        |> put_resp_header("location", media_path(conn, :show, media))
+        |> render("show.json-api", data: media)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -45,8 +45,8 @@ defmodule SocialAppApi.BlogController do
 
   def show(conn, %{"id" => id}) do
     try do
-      blog = Repo.get!(Blog, id)
-      render(conn, "show.json-api", data: blog)
+      media = Repo.get!(Media, id)
+      render(conn, "show.json-api", data: media)
     rescue
       e ->
         IO.inspect e # Print error to the console for debugging
@@ -56,23 +56,23 @@ defmodule SocialAppApi.BlogController do
     end
   end
 
-  def update(conn, %{"data" => %{"type" => "blog", "id" => id, "attributes" => blog_params}}) do
+  def update(conn, %{"data" => %{"type" => "media", "id" => id, "attributes" => media_params}}) do
     try do
       # get current user
       current_user = conn
       |> Guardian.Plug.current_resource
 
-      blog = Blog
-      |> where(author_id: ^current_user.id, id: ^id)
+      media = Media
+      |> where(uploader_id: ^current_user.id, id: ^id)
       |> Repo.one!
 
-      changeset = Blog.changeset(blog, blog_params)
+      changeset = Media.changeset(media, media_params)
 
       case Repo.update(changeset) do
-        {:ok, blog} ->
-          SocialAppApi.BlogChannel.broadcast_change(blog, current_user)
+        {:ok, media} ->
+          SocialAppApi.MediaChannel.broadcast_update(media, current_user)
 
-          render(conn, "show.json-api", data: blog)
+          render(conn, "show.json-api", data: media)
         {:error, changeset} ->
           conn
           |> put_status(:unprocessable_entity)
@@ -93,13 +93,13 @@ defmodule SocialAppApi.BlogController do
       current_user = conn
       |> Guardian.Plug.current_resource
 
-      blog = Blog
-      |> where(author_id: ^current_user.id, id: ^id)
+      media = Media
+      |> where(uploader_id: ^current_user.id, id: ^id)
       |> Repo.one!
 
       # Here we use delete! (with a bang) because we expect
       # it to always work (and if it does not, it will raise).
-      Repo.delete!(blog)
+      Repo.delete!(media)
 
       send_resp(conn, :no_content, "")
     rescue

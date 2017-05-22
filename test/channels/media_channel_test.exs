@@ -1,12 +1,12 @@
-defmodule SocialAppApi.BlogsChannelTest do
+defmodule SocialAppApi.MediaChannelTest do
   use SocialAppApi.ChannelCase
 
-  alias SocialAppApi.BlogChannel
+  alias SocialAppApi.MediaChannel
 
   setup do
     {:ok, _, socket} =
       socket("user_id", %{some: :assign})
-      |> subscribe_and_join(BlogChannel, "blog:lobby")
+      |> subscribe_and_join(MediaChannel, "media:lobby")
 
     {:ok, socket: socket}
   end
@@ -16,7 +16,7 @@ defmodule SocialAppApi.BlogsChannelTest do
     assert_reply ref, :ok, %{"hello" => "there"}
   end
 
-  test "shout broadcasts to blog:lobby", %{socket: socket} do
+  test "shout broadcasts to media:lobby", %{socket: socket} do
     push socket, "shout", %{"hello" => "all"}
     assert_broadcast "shout", %{"hello" => "all"}
   end

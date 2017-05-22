@@ -1,12 +1,12 @@
-defmodule SocialAppApi.BlogCommentsChannelTest do
+defmodule SocialAppApi.BlogCommentChannelTest do
   use SocialAppApi.ChannelCase
 
-  alias SocialAppApi.BlogCommentsChannel
+  alias SocialAppApi.BlogCommentChannel
 
   setup do
     {:ok, _, socket} =
       socket("user_id", %{some: :assign})
-      |> subscribe_and_join(BlogCommentsChannel, "blog:lobby")
+      |> subscribe_and_join(BlogCommentChannel, "blog:lobby")
 
     {:ok, socket: socket}
   end
