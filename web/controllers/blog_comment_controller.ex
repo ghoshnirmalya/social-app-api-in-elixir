@@ -10,11 +10,15 @@ defmodule SocialAppApi.BlogCommentController do
     |> where(blog_id: ^blog_id)
     |> order_by([t], asc: t.id)
     |> Repo.all
+    |> Repo.preload(:author)
+    |> Repo.preload(:blog)
     render(conn, "index.json-api", data: blog_comments)
   end
 
   def index(conn, _params) do
     blog_comments = Repo.all(BlogComment)
+    |> Repo.preload(:author)
+    |> Repo.preload(:blog)
     render(conn, "index.json-api", data: blog_comments)
   end
 
@@ -47,6 +51,8 @@ defmodule SocialAppApi.BlogCommentController do
   def show(conn, %{"id" => id}) do
     try do
       blog_comment = Repo.get!(BlogComment, id)
+      |> Repo.preload(:author)
+      |> Repo.preload(:blog)
       render(conn, "show.json-api", data: blog_comment)
     rescue
       e ->

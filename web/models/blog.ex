@@ -4,7 +4,7 @@ defmodule SocialAppApi.Blog do
   schema "blogs" do
     field :title, :string
     field :body, :string
-    belongs_to :author, SocialAppApi.Author
+    belongs_to :author, SocialAppApi.User
 
     timestamps()
   end
