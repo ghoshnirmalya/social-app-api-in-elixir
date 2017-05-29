@@ -3,7 +3,7 @@ defmodule SocialAppApi.BlogComment do
 
   schema "blog_comments" do
     field :body, :string
-    belongs_to :author, SocialAppApi.Author
+    belongs_to :author, SocialAppApi.User
     belongs_to :blog, SocialAppApi.Blog
 
     timestamps()

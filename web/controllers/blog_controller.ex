@@ -15,6 +15,7 @@ defmodule SocialAppApi.BlogController do
   def index(conn, _params) do
     query = from(b in Blog, order_by: [asc: b.id])
     blogs = Repo.all(query)
+    |> Repo.preload(:author)
 
     render(conn, "index.json-api", data: blogs)
   end
@@ -30,7 +31,7 @@ defmodule SocialAppApi.BlogController do
 
     case Repo.insert(changeset) do
       {:ok, blog} ->
-        SocialAppApi.BlogChannel.broadcast_change(blog, current_user)
+        SocialAppApi.BlogChannel.broadcast_create(blog, current_user)
 
         conn
         |> put_status(:created)
@@ -46,6 +47,7 @@ defmodule SocialAppApi.BlogController do
   def show(conn, %{"id" => id}) do
     try do
       blog = Repo.get!(Blog, id)
+      |> Repo.preload(:author)
       render(conn, "show.json-api", data: blog)
     rescue
       e ->
@@ -70,7 +72,7 @@ defmodule SocialAppApi.BlogController do
 
       case Repo.update(changeset) do
         {:ok, blog} ->
-          SocialAppApi.BlogChannel.broadcast_change(blog, current_user)
+          SocialAppApi.BlogChannel.broadcast_update(blog, current_user)
 
           render(conn, "show.json-api", data: blog)
         {:error, changeset} ->
