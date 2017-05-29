@@ -11,4 +11,13 @@ defmodule SocialAppApi.BlogView do
   def user_link(blog, conn) do
     user_url(conn, :show, blog.author_id)
   end
+
+  def author(struct, conn) do
+    case struct.author do
+      %Ecto.Association.NotLoaded{} ->
+        struct
+        |> Ecto.assoc(:author)
+      other -> other
+    end
+  end
 end

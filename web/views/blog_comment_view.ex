@@ -18,4 +18,22 @@ defmodule SocialAppApi.BlogCommentView do
   def blog_link(blog_comment, conn) do
     blog_url(conn, :show, blog_comment.blog_id)
   end
+
+  def author(struct, conn) do
+    case struct.author do
+      %Ecto.Association.NotLoaded{} ->
+        struct
+        |> Ecto.assoc(:author)
+      other -> other
+    end
+  end
+
+  def blog(struct, conn) do
+    case struct.blog do
+      %Ecto.Association.NotLoaded{} ->
+        struct
+        |> Ecto.assoc(:blog)
+      other -> other
+    end
+  end
 end
