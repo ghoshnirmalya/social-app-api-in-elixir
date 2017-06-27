@@ -2,22 +2,25 @@ defmodule SocialAppApi.AuthController do
   @moduledoc """
   Auth controller responsible for handling Ueberauth responses
   """
-
   use SocialAppApi.Web, :controller
-
-  plug Ueberauth
 
   alias SocialAppApi.User
   alias Ueberauth.Auth
 
-  def request(_params) do
-  end
+  plug Ueberauth
 
   def delete(conn, _params) do
     # Sign out the user
     conn
     |> put_status(200)
     |> Guardian.Plug.sign_out(conn)
+  end
+
+  def callback(conn, %{"data" => %{"type" => "auth", "attributes" => %{"token" => token, "email" => email}}}) do
+    case basic_info(email) do
+      {:ok, user} ->
+        sign_in_user(conn, %{"user" => user})
+    end
   end
 
   def callback(%{assigns: %{ueberauth_failure: _fails}} = conn, _params) do
@@ -115,22 +118,12 @@ defmodule SocialAppApi.AuthController do
     }
   end
 
-  def unauthenticated(conn, params) do
-  conn
-    |> put_status(401)
-    |> render(SocialAppApi.ErrorView, "401.json-api")
-  end
-
-  def unauthorized(conn, params) do
-    conn
-    |> put_status(403)
-    |> render(SocialAppApi.ErrorView, "403.json-api")
-  end
-
-  def already_authenticated(conn, params) do
-    conn
-    |> put_status(200)
-    |> render(SocialAppApi.ErrorView, "200.json-api")
+  def basic_info(email) do
+    {:ok,
+      %{
+        email: email,
+      }
+    }
   end
 
   def no_resource(conn, params) do
