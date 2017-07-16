@@ -32,7 +32,7 @@ defmodule SocialAppApi.BlogCommentChannel do
   #   true
   # end
 
-  def broadcast_change(comment, user, blod_id) do
+  def broadcast_change(comment, user, blog_id) do
     payload = %{
       "id" => to_string(comment.id),
       "type" => "blog-comment",
@@ -42,7 +42,7 @@ defmodule SocialAppApi.BlogCommentChannel do
       "relationships" => %{
         "blog" => %{
           "links" => %{
-            "related" => "#{blog_url(Endpoint, :index)}/#{blod_id}"
+            "related" => "#{blog_url(Endpoint, :index)}/#{blog_id}"
           }
         },
         "author" => %{

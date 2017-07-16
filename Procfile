@@ -1,1 +1,1 @@
-web: elixir -S mix do ecto.migrate, phoenix.server
+web: MIX_ENV=prod mix phoenix.server

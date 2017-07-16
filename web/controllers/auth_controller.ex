@@ -107,6 +107,14 @@ defmodule SocialAppApi.AuthController do
     end
   end
 
+  def sign_up_user(conn, %{"email" => email}) do
+    {:ok,
+      %{
+        email: email,
+      }
+    }
+  end
+
   def basic_info(%Auth{} = auth) do
     {:ok,
       %{

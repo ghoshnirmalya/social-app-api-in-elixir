@@ -12,7 +12,7 @@ config :social_app_api,
 # Configures the endpoint
 config :social_app_api, SocialAppApi.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "swM9UavsN9Og2l4YuFCxuY9JkJbdP4MzMJ1S6kDAjmiandGNxHNbc9OMI7upMBmf",
+  secret_key_base: System.get_env("SECRET_KEY_BASE"),
   pubsub: [name: SocialAppApi.PubSub, adapter: Phoenix.PubSub.PG2],
   render_errors: [view: SocialAppApi.ErrorView, accepts: ~w(html json json-api)]
 
