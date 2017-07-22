@@ -16,11 +16,30 @@ defmodule SocialAppApi.AuthController do
     |> Guardian.Plug.sign_out(conn)
   end
 
-  def callback(conn, %{"data" => %{"type" => "auth", "attributes" => %{"token" => token, "email" => email}}}) do
-    case basic_info(email) do
-      {:ok, user} ->
-        sign_in_user(conn, %{"user" => user})
-    end
+  def callback(conn, %{
+    "data" => %{
+      "type" => "auth",
+      "attributes" => %{
+        "token" => token,
+        "email" => email,
+        "first_name" => first_name,
+        "last_name" => last_name,
+        "avatar" => avatar
+      }
+    }
+  }) do
+    sign_in_user(conn, %{
+      "data" => %{
+        "type" => "auth",
+        "attributes" => %{
+          "token" => token,
+          "email" => email,
+          "first_name" => first_name,
+          "last_name" => last_name,
+          "avatar" => avatar
+        }
+      }
+    })
   end
 
   def callback(%{assigns: %{ueberauth_failure: _fails}} = conn, _params) do
@@ -31,29 +50,23 @@ defmodule SocialAppApi.AuthController do
     |> render(SocialAppApi.ErrorView, "401.json-api")
   end
 
-  def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
-    case basic_info(auth) do
-      {:ok, user} ->
-        sign_in_user(conn, %{"user" => user})
-    end
-
-    case basic_info(auth) do
-      {:ok, user} ->
-        conn
-        |> render(SocialAppApi.UserView, "show.json-api", %{data: user})
-      {:error} ->
-        conn
-        |> put_status(401)
-        |> render(SocialAppApi.ErrorView, "401.json-api")
-    end
-  end
-
-  def sign_in_user(conn, %{"user" => user}) do
+  def sign_in_user(conn, %{
+    "data" => %{
+      "type" => "auth",
+      "attributes" => %{
+        "token" => token,
+        "email" => email,
+        "first_name" => first_name,
+        "last_name" => last_name,
+        "avatar" => avatar
+      }
+    }
+  }) do
     try do
       # Attempt to retrieve exactly one user from the DB, whose
       # email matches the one provided with the login request
       user = User
-      |> where(email: ^user.email)
+      |> where(email: ^email)
       |> Repo.one!
 
       cond do
@@ -80,17 +93,41 @@ defmodule SocialAppApi.AuthController do
       e ->
         IO.inspect e # Print error to the console for debugging
 
-        # Successful registration
-        sign_up_user(conn, %{"user" => user})
+        # Sign the user up
+        sign_up_user(conn, %{
+          "data" => %{
+            "type" => "auth",
+            "attributes" => %{
+              "token" => token,
+              "email" => email,
+              "first_name" => first_name,
+              "last_name" => last_name,
+              "avatar" => avatar
+            }
+          }
+        })
     end
   end
 
-  def sign_up_user(conn, %{"user" => user}) do
-    changeset = User.changeset %User{}, %{email: user.email,
-      avatar: user.avatar,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      auth_provider: "google"}
+  def sign_up_user(conn, %{
+    "data" => %{
+      "type" => "auth",
+      "attributes" => %{
+        "token" => token,
+        "email" => email,
+        "first_name" => first_name,
+        "last_name" => last_name,
+        "avatar" => avatar
+      }
+    }
+  }) do
+    changeset = User.changeset %User{}, %{
+      email: email,
+      avatar: avatar,
+      first_name: first_name,
+      last_name: last_name,
+      auth_provider: "Google"
+    }
 
     case Repo.insert changeset do
       {:ok, user} ->
@@ -105,38 +142,5 @@ defmodule SocialAppApi.AuthController do
         |> put_status(422)
         |> render(SocialAppApi.ErrorView, "422.json-api")
     end
-  end
-
-  def sign_up_user(conn, %{"email" => email}) do
-    {:ok,
-      %{
-        email: email,
-      }
-    }
-  end
-
-  def basic_info(%Auth{} = auth) do
-    {:ok,
-      %{
-        avatar: auth.info.image,
-        email: auth.info.email,
-        first_name: auth.info.first_name,
-        last_name: auth.info.last_name
-      }
-    }
-  end
-
-  def basic_info(email) do
-    {:ok,
-      %{
-        email: email,
-      }
-    }
-  end
-
-  def no_resource(conn, params) do
-    conn
-    |> put_status(404)
-    |> render(SocialAppApi.ErrorView, "404.json-api")
   end
 end
