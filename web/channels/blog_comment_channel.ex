@@ -53,6 +53,6 @@ defmodule SocialAppApi.BlogCommentChannel do
       }
     }
 
-    SocialAppApi.Endpoint.broadcast("comments", "app/blog-page/HAS_UPDATED_OR_NEW_COMMENTS", payload)
+    SocialAppApi.Endpoint.broadcast("comments", "app/BlogPage/HAS_UPDATED_OR_NEW_COMMENTS", payload)
   end
 end
