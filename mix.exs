@@ -4,7 +4,7 @@ defmodule SocialAppApi.Mixfile do
   def project do
     [app: :social_app_api,
      version: "0.0.1",
-     elixir: "~> 1.2",
+     elixir: "~> 1.5.1",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -37,19 +37,19 @@ defmodule SocialAppApi.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.2.1"},
-     {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_ecto, "~> 3.0"},
-     {:postgrex, ">= 0.13.3"},
-     {:gettext, "~> 0.11"},
-     {:cowboy, "~> 1.0"},
-     {:cors_plug, "~> 1.2"},
-     {:excoveralls, "~> 0.5.7", only: :test},
-     {:oauth, github: "tim/erlang-oauth"},
+    [{:phoenix, "~> 1.3.0"},
+     {:phoenix_pubsub, "~> 1.0.2"},
+     {:phoenix_ecto, "~> 3.2.3"},
+     {:postgrex, "~> 0.13.3"},
+     {:gettext, "~> 0.13.1"},
+     {:cowboy, "~> 1.1.2"},
+     {:cors_plug, "~> 1.3"},
+     {:excoveralls, "~> 0.7.2", only: :test},
+     {:oauth, "~> 1.6", github: "tim/erlang-oauth"},
      {:ueberauth, "~> 0.4"},
-     {:ueberauth_google, "~> 0.2"},
-     {:ja_serializer, "~> 0.11.2"},
-     {:guardian, "~> 0.14.2"}]
+     {:ueberauth_google, "~> 0.6"},
+     {:ja_serializer, "~> 0.12.0"},
+     {:guardian, "~> 0.14.5"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
