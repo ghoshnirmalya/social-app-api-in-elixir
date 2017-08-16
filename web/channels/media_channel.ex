@@ -31,7 +31,7 @@ defmodule SocialAppApi.MediaChannel do
       }
     }
 
-    SocialAppApi.Endpoint.broadcast("media", "app/MediaLibraryPage/HAS_NEW_MEDIA", payload)
+    SocialAppApi.Endpoint.broadcast("media", "app/media-library-page/HAS_NEW_MEDIA", payload)
   end
 
   def broadcast_update(media, user) do
@@ -52,6 +52,6 @@ defmodule SocialAppApi.MediaChannel do
       }
     }
 
-    SocialAppApi.Endpoint.broadcast("media", "app/MediaLibraryPage/HAS_UPDATED_MEDIA", payload)
+    SocialAppApi.Endpoint.broadcast("media", "app/media-library-page/HAS_UPDATED_MEDIA", payload)
   end
 end

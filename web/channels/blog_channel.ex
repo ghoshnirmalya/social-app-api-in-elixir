@@ -30,7 +30,7 @@ defmodule SocialAppApi.BlogChannel do
       }
     }
 
-    SocialAppApi.Endpoint.broadcast("blogs", "app/BlogsPage/HAS_NEW_BLOGS", payload)
+    SocialAppApi.Endpoint.broadcast("blogs", "app/blogs-page/HAS_NEW_BLOGS", payload)
   end
 
   def broadcast_update(blog, user) do
@@ -50,6 +50,6 @@ defmodule SocialAppApi.BlogChannel do
       }
     }
 
-    SocialAppApi.Endpoint.broadcast("blogs", "app/BlogsPage/HAS_UPDATED_BLOGS", payload)
+    SocialAppApi.Endpoint.broadcast("blogs", "app/blogs-page/HAS_UPDATED_BLOGS", payload)
   end
 end
