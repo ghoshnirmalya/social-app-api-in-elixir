@@ -143,4 +143,10 @@ defmodule SocialAppApi.AuthController do
         |> render(SocialAppApi.ErrorView, "422.json-api")
     end
   end
+
+  def unauthenticated(conn, _params) do
+    conn
+    |> put_status(401)
+    |> render(SocialAppApi.ErrorView, "401.json-api")
+  end
 end
